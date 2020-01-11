@@ -96,6 +96,8 @@ const newsService = (function () {
 
 // Load news function
 function loadNews() {
+
+  showPreloader();
   const country = selectInput.value;
   const searchText = searchInput.value;
   if (!searchText) {
@@ -108,6 +110,17 @@ function loadNews() {
 
 // Function on get response from server
 function onGetResponse(err, res) {
+  removePreloader();
+
+  if (err) {
+    showAlert(err, 'err-msg');
+    return
+  }
+  if (!res.articles.length) {
+    showAlert('There is no such news. Enter the correct data', 'rounded');
+    return;
+  }
+
   renderNews(res.articles);
 };
 
@@ -160,4 +173,28 @@ function newsTemplate({
         </div>
     </div>
   </div>`;
+};
+
+//Function showWarning
+function showAlert(msg, type = 'succes') {
+  M.toast({
+    html: msg,
+    classes: type
+  })
+};
+
+//Function show preloader
+function showPreloader() {
+  document.body.insertAdjacentHTML('afterbegin',
+    `<div class="progress">
+      <div class="indeterminate"></div>
+     </div>`);
+};
+
+//Function remove preloader
+function removePreloader() {
+  const preloader = document.querySelector('.progress');
+  if (preloader) {
+    preloader.remove();
+  }
 };
