@@ -114,7 +114,9 @@ function onGetResponse(err, res) {
 // Function render news
 function renderNews(news) {
   const newsContainer = document.querySelector('.news-container .row');
-
+  if (newsContainer.children.length) {
+    clearContainer(newsContainer);
+  }
 
   let fragment = '';
   news.forEach(newsItem => {
@@ -124,7 +126,16 @@ function renderNews(news) {
   newsContainer.insertAdjacentHTML('afterbegin', fragment);
 };
 
+//Function clear newContainer
+function clearContainer(container) {
+  // container.textContent = '';
 
+  let child = container.lastElementChild;
+  while (child) {
+    child.remove();
+    child = container.lastElementChild;
+  }
+};
 
 //Function news item template
 function newsTemplate({
