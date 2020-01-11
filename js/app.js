@@ -55,6 +55,23 @@ function customHttp() {
 //Init http module
 const http = customHttp();
 
+
+//Elements
+const form = document.forms['newsControls'];
+const selectInput = form['country']
+const searchInput = form['search'];
+
+//Events
+form.addEventListener('submit', (e) => {
+  loadNews();
+  e.preventDefault();
+});
+
+selectInput.addEventListener('change', (e) => {
+  e.preventDefault();
+  loadNews();
+});
+
 //init selects
 document.addEventListener('DOMContentLoaded', function () {
   M.AutoInit();
@@ -77,29 +94,37 @@ const newsService = (function () {
 }());
 
 
-
 // Load news function
 function loadNews() {
-  newsService.topHeadlines('ru', onGetResponse);
+  const country = selectInput.value;
+  const searchText = searchInput.value;
+  if (!searchText) {
+    newsService.topHeadlines(country, onGetResponse)
+  } else {
+    newsService.everything(searchText, onGetResponse)
+  }
+
 };
 
 // Function on get response from server
 function onGetResponse(err, res) {
-  // console.log(res);
   renderNews(res.articles);
 };
 
 // Function render news
 function renderNews(news) {
   const newsContainer = document.querySelector('.news-container .row');
+
+
   let fragment = '';
   news.forEach(newsItem => {
     const element = newsTemplate(newsItem);
     fragment += element;
   });
-  console.log(fragment);
   newsContainer.insertAdjacentHTML('afterbegin', fragment);
 };
+
+
 
 //Function news item template
 function newsTemplate({
